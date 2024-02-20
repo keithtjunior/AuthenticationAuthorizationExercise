@@ -32,6 +32,10 @@ def not_found(e):
 def unauthorized(e): 
     return render_template('error-401.html', e=e)
 
+@app.errorhandler(405) 
+def not_allowed(e): 
+    return render_template('error-405.html', e=e)
+
 @app.route('/')
 def home():
     # app.logger.info('variable: %s', variable)
@@ -111,7 +115,7 @@ def user_info(username):
 @app.route('/users/<username>/delete', methods=["POST"])
 def user_delete(username):
     user = User.query.get_or_404(username)
-    if ('username' not in session or username != session['username']) and not session['is_admin']:
+    if ('username' not in session or username != session['username']) and ('username' not in session or session.get('is_admin') == False):
         return redirect('/')
     db.session.delete(user)
     db.session.commit()
@@ -125,7 +129,7 @@ def user_delete(username):
 
 @app.route('/users/<username>/feedback/add', methods=['GET', 'POST'])
 def feedback_add(username):
-    if ('username' not in session or username != session['username']) and not session['is_admin']: 
+    if ('username' not in session or username != session['username']) and ('username' not in session or session.get('is_admin') == False): 
         return redirect('/')
     form = FeedbackCreateForm() 
     if form.validate_on_submit():
@@ -141,7 +145,7 @@ def feedback_add(username):
 @app.route('/feedback/<int:feedback_id>/update', methods=['GET', 'POST'])
 def feedback_update(feedback_id):
     feedback = Feedback.query.get_or_404(feedback_id)
-    if ('username' not in session or feedback.username != session['username']) and not session['is_admin']:
+    if ('username' not in session or feedback.username != session['username']) and ('username' not in session or session.get('is_admin') == False):
         return redirect('/')
     form = FeedbackEditForm() 
     form.title.default = feedback.title
@@ -155,10 +159,10 @@ def feedback_update(feedback_id):
         return redirect(f'/users/{feedback.username}')
     return render_template('update-feedback.html', form=form, username=feedback.username)
 
-@app.route('/feedback/<int:feedback_id>/delete', methods=["POST"])
+@app.route('/feedback/<int:feedback_id>/delete', methods=['POST'])
 def feedback_delete(feedback_id):
     feedback = Feedback.query.get_or_404(feedback_id)
-    if ('username' not in session or feedback.username != session['username']) and not session['is_admin']:
+    if ('username' not in session or feedback.username != session['username']) and ('username' not in session or session.get('is_admin') == False):
         return redirect('/')
     db.session.delete(feedback)
     db.session.commit()
