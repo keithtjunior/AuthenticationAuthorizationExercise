@@ -25,7 +25,7 @@ class User(db.Model):
 
     def __repr__(self):
         u = self
-        return f'<User username={u.username} password={u.password} email={u.email} first_name={u.first_name} last_name={u.last_name}>'
+        return f'<User username={u.username} password={u.password} email={u.email} first_name={u.first_name} last_name={u.last_name} is_admin={u.is_admin}>'
     
     @classmethod
     def register(cls, username, pwd, email, first_name, last_name):
