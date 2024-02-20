@@ -14,7 +14,7 @@
           <ul class="nav navbar-nav flex-row">
             {% if session['username'] %}
                 <li class="nav-item">
-                    <a class="nav-link text-light" href="/">
+                    <a class="nav-link text-light" href="/users/{{session['username']}}">
                         <span class="text-primary">{{ 'ADMIN: ' if session['is_admin'] else '' }}</span>{{session['username']}}
                     </a>
                 </li>
