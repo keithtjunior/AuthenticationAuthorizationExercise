@@ -55,7 +55,7 @@ def register():
         email = form.email.data.strip()
         first_name = form.first_name.data.strip()
         last_name = form.last_name.data.strip()
-        new_user = User.register(username, password, email, first_name, last_name)
+        new_user = User.register(username, password, email, first_name, last_name, is_admin=False)
         db.session.add(new_user)
         try:
             db.session.commit()
@@ -63,7 +63,7 @@ def register():
             form.username.errors.append('Username is unavailable. Please pick another.')
             return render_template('register.html', form=form)
         flash('Welcome! Your account was successfully created!', "success")
-        if session['is_admin']:
+        if session.get('is_admin') == True:
             return redirect(f'/users/{session["username"]}')
         else:
             session['username'] = new_user.username
@@ -94,7 +94,8 @@ def login():
 @app.route('/logout')
 def logout():
     session.pop('username')
-    session.pop('is_admin')
+    if session.get('is_admin') == True:
+        session.pop('is_admin')
     flash('You have been logged out. Come back soon!', "info")
     return redirect('/')
 
