@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}User Info: {{user.username}}{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h1 class="card-title font-weight-bold text-primary display-4">{{user.username}}</h1>
+                        <h6 class="card-subtitle mb-2 text-secondary h5">{{user.first_name}} {{user.last_name}}</h6>
+                        <p class="card-text"><u>{{user.email}}</u></p>
+                        {% if session['username'] == user.username or session['is_admin'] %}
+                            <a class="btn btn-primary" href="/users/{{user.username}}/feedback/add" role="button">
+                                Add Feedback
+                            </a>
+                            <form class="d-inline" action="/users/{{user.username}}/delete" method="post">
+                                <button type="submit" class="btn btn-danger">Delete User</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <ul class="list-group mt-4">
+                    {% if session['username'] == user.username or session['is_admin'] %}
+                        {% if user.feedback %}
+                            {% for item in user.feedback %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a class="feedback-link" href="/feedback/{{item.id}}/update">
+                                        <div class="ms-2 me-auto align-items-center">
+                                        <div class="fw-bold">{{item.title}}</div>
+                                            {{item.content}}
+                                        </div>
+                                    </a>
+                                    <form class="d-inline" action="/feedback/{{item.id}}/delete" method="post">
+                                        <button type="submit" class="badge bg-danger rounded-pill btn">X</button>
+                                    </form>
+                                </li>
+                            {% endfor %}
+                        {% else %}
+                            <li class="list-group-item">No Feedback Available</li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

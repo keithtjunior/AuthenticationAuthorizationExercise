@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/app.css">
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    <nav class="navbar navbar-light bg-dark justify-content-between ">
+        <div class="container">
+          <ul class="nav navbar-nav flex-row">
+            {% if session['username'] %}
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="/">
+                        <span class="text-primary">{{ 'ADMIN: ' if session['is_admin'] else '' }}</span>{{session['username']}}
+                    </a>
+                </li>
+                {% if session['is_admin'] %}
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="/register">Register User</a>
+                    </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link link-warning" href="/logout">Logout</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="/login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="/register">Register</a>
+                </li>
+            {% endif %}
+          </ul>
+        </div>
+      </nav>
+    <div id="main">
+        <div class="container mx-auto">
+            {% with messages = get_flashed_messages(with_categories=true)%}
+                {% if messages %}
+                    {% for category, msg in messages %}
+                    <div class="alert alert-{{category}} msg mb-4" role="alert">{{msg}}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+    <script src="/static/app.js"></script>
+</body>
+</html>
